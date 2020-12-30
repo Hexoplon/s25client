@@ -21,7 +21,7 @@
 #include <limits>
 
 /// Geschwindigkeitsabstufungen - Längen der GFs in ms
-const std::array<unsigned, 6> SUPPRESS_UNUSED SPEED_GF_LENGTHS = {{80, 60, 50, 40, 30, 1}};
+const std::array<unsigned, 6> SUPPRESS_UNUSED SPEED_GF_LENGTHS = {{80, 60, 50, 25, 20, 1}};
 
 /// Reichweite der Bergarbeiter
 const unsigned MINER_RADIUS = 2;
