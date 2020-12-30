@@ -135,8 +135,10 @@ void nofCatapultMan::HandleDerivedEvent(const unsigned /*id*/)
                         // Entfernung ausrechnen
                         unsigned distance = gwg->CalcDistance(pos, building->GetPos());
 
-                        // Entfernung nicht zu hoch?
-                        if(distance < 14)
+                        const std::array<unsigned, 5> ranges = { {14, 12, 10, 9, 8} };
+                        unsigned range = ranges[gwg->GetGGS().getSelection(AddonId::CATAPULT_RANGE)];
+
+                        if(distance < range)
                         {
                             // Mit in die Liste aufnehmen
                             possibleTargets.push_back(PossibleTarget(building->GetPos(), distance));
