@@ -19,6 +19,8 @@
 #include "CatapultStone.h"
 #include "EventManager.h"
 #include "GamePlayer.h"
+#include "GlobalGameSettings.h"
+#include "world/GameWorldGame.h"
 #include "Loader.h"
 #include "SerializedGameData.h"
 #include "buildings/nobMilitary.h"
@@ -30,6 +32,7 @@
 #include "world/GameWorldGame.h"
 #include "gameData/JobConsts.h"
 #include "gameData/MapConsts.h"
+#include "addons/const_addons.h"
 
 const std::array<DrawPoint, 6> STONE_STARTS = {{{-4, -48}, {-3, -47}, {-13, -47}, {-11, -48}, {-13, -47}, {-2, -47}}};
 
@@ -227,8 +230,11 @@ void nofCatapultMan::HandleDerivedEvent(const unsigned /*id*/)
         {
             // Stein in Bewegung setzen
 
+            const std::array<unsigned, 5> probabilities = {{70, 60, 50, 40, 30}};
+            int hitChance = probabilities[gwg->GetGGS().getSelection(AddonId::CATAPULT_HITCHANCE)];
             // Soll das Gebäude getroffen werden (70%)
-            bool hit = (RANDOM.Rand(__FILE__, __LINE__, GetObjId(), 99) < 70);
+
+            bool hit = (RANDOM.Rand(__FILE__, __LINE__, GetObjId(), 99) < hitChance);
 
             // Radius fürs Treffen und Nicht-Treffen,  (in Pixeln), nur visuell
             const int RADIUS_HIT = 15; // nicht nach unten hin!

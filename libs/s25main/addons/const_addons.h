@@ -37,6 +37,7 @@
 // 00C Flamefire
 // 00D Shawn8901
 // 00E Jonathan
+// 00F Hexoplon
 
 // Do not forget to add your Addon to GlobalGameSettings::registerAllAddons @ GlobalGameSettings.cpp!
 // Never use a number twice!
@@ -50,6 +51,8 @@
 ENUM_WITH_STRING(AddonId, LIMIT_CATAPULTS = 0x00000000, INEXHAUSTIBLE_MINES = 0x00000001, REFUND_MATERIALS = 0x00000002,
                  EXHAUSTIBLE_WATER = 0x00000003, REFUND_ON_EMERGENCY = 0x00000004, MANUAL_ROAD_ENLARGEMENT = 0x00000005,
                  CATAPULT_GRAPHICS = 0x00000006, METALWORKSBEHAVIORONZERO = 0x00000007,
+
+                 CATAPULT_HITCHANCE = 0x00F00000,
 
                  DEMOLITION_PROHIBITION = 0x00100000, CHARBURNER = 0x00100001, TRADE = 0x00100002,
 

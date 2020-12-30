@@ -73,6 +73,8 @@ void GlobalGameSettings::registerAllAddons()
     registerAddon(std::make_unique<AddonCatapultGraphics>());
     registerAddon(std::make_unique<AddonMetalworksBehaviorOnZero>());
 
+    registerAddon(std::make_unique<AddonCatapultHitChance>());
+
     registerAddon(std::make_unique<AddonDemolitionProhibition>());
     registerAddon(std::make_unique<AddonCharburner>());
     registerAddon(std::make_unique<AddonTrade>());
