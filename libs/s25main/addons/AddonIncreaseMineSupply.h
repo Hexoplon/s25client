@@ -17,17 +17,30 @@
 
 #pragma once
 
-#include "AddonBool.h"
+#include "AddonList.h"
 #include "mygettext/mygettext.h"
 
 /**
- *  Addon for a Charburner
+ *  Addon for artificially adjusting the resource supply on a map by adjusting the consumption rate of mines.
  */
-class AddonIncreaseMineSupply : public AddonBool
+class AddonIncreaseMineSupply : public AddonList
 {
 public:
     AddonIncreaseMineSupply()
-        : AddonBool(AddonId::MINE_SUPPLY, AddonGroup::Economy, _("Increase supply in mines"),
-            _("Mines will not always consume resources"))
+        : AddonList(AddonId::MINE_SUPPLY, AddonGroup::Economy, _("Adjust mine supply"),
+            _("Adjust how many resources are available in mines \n"
+              "Affects all types of mines.\n"
+              "NOTE: Enabling inexhaustible mines will effectively disable this addon."
+            ),
+            {
+              _("Default"),
+              _("50%"),
+              _("33%"),
+              _("25%"),
+              _("100%"),
+              _("300%"),
+              _("-25%"),
+              _("-50%"),
+            })
     {}
 };

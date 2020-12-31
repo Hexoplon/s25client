@@ -97,10 +97,51 @@ bool nofMiner::StartWorking()
       settings.isEnabled(AddonId::INEXHAUSTIBLE_MINES)
       || (workplace->GetBuildingType() == BLD_GRANITEMINE && settings.isEnabled(AddonId::INEXHAUSTIBLE_GRANITEMINES));
     if (!inexhaustibleRes){
-        // If MINE_SUPPLY addon is enabled, only consume resources 2/3 of the time.
-        if (!settings.isEnabled(AddonId::MINE_SUPPLY) || RANDOM.Rand(__FILE__, __LINE__, GetObjId(), 3) > 0) {
-            gwg->ReduceResource(resPt);
+        // Numerator and denomenator indicating how often to not consume resources. Numerators are zero indexed for the first three entries, so 0/3 -> 1/3
+        // For the last two sets of numerators and denomenators.
+        // When the supply is increased, the probability of not consuming resources is applied to the same resource over multiple iterations, until they
+        // are finally gone. Assuming 1000 resources on a point, after one itteration with the 50% increase option, 333 are remaining. These are then mined
+        // using the same probabilites, leaving 111 resources and so on. The sum of all the available show a 50% increase with a 1/3 chance of not consuming resources.
+        // The same logic does not apply when reducing the amount of resources, as they will not pass through twice, hence why decreasing supply uses normal fractions
+        // to represent the decrease in supply.
 
+        // The numbers mean:
+        // 0. Default, consume at normal rate
+        // 1. skip consumption 1/3 of the time gives 50% total increase in resources
+        // 2. skip consumption 1/4 of the time, gives 33% total increase in resources
+        // 3. skip consumption 1/5 of the time, gives 25% total increase in resources
+        // 4. skip consumption 2/3 of the time, gives 100% total increase in resources
+        // 5. skip consumption 3/4 of the time, gives 300% total increase in resources
+        // 6. 1/4 of the time, consume one extra resource, giving a 25% reduction in resources
+        // 7. 1/2 of the time, consume one extra resource, giving a 50% reduction in resources
+        std::array<int, 8> numerator = { 0, 0, 0, 0, 2, 3 , 0, 0};
+        std::array<int, 8> denomenator = { 0, 3, 4, 5, 3, 4, 4, 2 };
+        unsigned selection = settings.getSelection(AddonId::MINE_SUPPLY);
+        
+        //If MINE_SUPPLY is not enabled, the mines will conume resources like normally.
+
+        switch (selection)
+        {
+            case 0:
+            default: gwg->ReduceResource(resPt); break; //Normal operation, or player chose an increase less than 100%
+            case 1:
+            case 2:
+            case 3: // Increase mine supply by less than 100%
+                if (RANDOM.Rand(__FILE__, __LINE__, GetObjId(), denomenator[selection]) > numerator[selection])
+                    gwg->ReduceResource(resPt);
+                break;
+            case 4:
+            case 5: // Increase mine supply by 100% or more
+                if (RANDOM.Rand(__FILE__, __LINE__, GetObjId(), denomenator[selection]) < numerator[selection])
+                    gwg->ReduceResource(resPt);
+                break;
+            case 6:
+            case 7: // Decrease mine supply by consuming at normal rate pluss sometimes more. Only perform double consumption if there are two or more resources available in the given point.
+                gwg->ReduceResource(resPt);
+                if (RANDOM.Rand(__FILE__, __LINE__, GetObjId(), denomenator[selection]) > numerator[selection] && gwg->GetNode(resPt).resources.getAmount() > 1)
+                    gwg->ReduceResource(resPt);
+                break;
+        }
     }
     return nofWorkman::StartWorking();
 }
