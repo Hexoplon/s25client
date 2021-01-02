@@ -21,7 +21,7 @@
 #include "mygettext/mygettext.h"
 
 /**
- *  Addon allows users to adjust the percentage of trees that have the recurring spawn animal event
+ *  Addon allows users to adjust the range of catapults
  */
 class AddonCatapultRange : public AddonList
 {
@@ -30,7 +30,7 @@ public:
         : AddonList(AddonId::CATAPULT_RANGE, AddonGroup::Military, _("Catapult range"),
             _("Adjust the range of catapults"),
             {
-              _("13"),
+              _("Default: 13"),
               _("11"),
               _("9"),
               _("8"),
